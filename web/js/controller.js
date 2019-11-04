@@ -154,11 +154,8 @@
         input.poll().enable();
     };
 
-    // !to add debounce
-    const popup = (msg) => {
-        popupBox.html(msg);
-        popupBox.fadeIn().delay(0).fadeOut();
-    };
+    const showPopup = (message) => popupBox.html(message).fadeIn().fadeOut();
+    const popup = util.debounce(showPopup, 1000);
 
     const onKeyPress = (data) => {
         keyButtons[data.key].addClass('pressed');
@@ -324,4 +321,4 @@
     // initial app state
     setState(app.state.eden);
 
-})($, document, event, env, gameList, input, KEY, log, room);
+})($, document, event, env, gameList, input, KEY, log, room, util);
