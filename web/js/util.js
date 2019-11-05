@@ -23,6 +23,36 @@ const util = (() => {
                 wait = true;
                 setTimeout(() => wait = false, ms);
             };
+        },
+
+        /**
+         * A decorator that blocks and calls the last function until the specified amount of milliseconds.
+         * @param f The function to call.
+         * @param ms The amount of time in milliseconds to ignore the function calls.
+         * @returns {Function}
+         */
+        throttle: (f, ms) => {
+            let lastCall;
+            let lastTime;
+
+            return function () {
+                // could be a stack
+                const lastContext = this;
+                const lastArguments = arguments;
+
+                if (!lastTime) {
+                    f.apply(lastContext, lastArguments);
+                    lastTime = Date.now()
+                } else {
+                    clearTimeout(lastCall);
+                    lastCall = setTimeout(() => {
+                        if (Date.now() - lastTime >= ms) {
+                            f.apply(lastContext, lastArguments);
+                            lastTime = Date.now()
+                        }
+                    }, ms - (Date.now() - lastTime))
+                }
+            }
         }
     }
 })();

@@ -155,7 +155,7 @@
     };
 
     const showPopup = (message) => popupBox.html(message).fadeIn().fadeOut();
-    const popup = util.debounce(showPopup, 1000);
+    const popup = util.throttle(showPopup, 1000);
 
     const onKeyPress = (data) => {
         keyButtons[data.key].addClass('pressed');
@@ -179,6 +179,9 @@
 
         state.keyRelease(data.key);
     };
+
+    const saveGame = util.debounce(socket.saveGame, 1000);
+    const loadGame = util.debounce(socket.loadGame, 1000);
 
     const app = {
         state: {
@@ -267,10 +270,10 @@
                             popup('Copy link to clipboard!');
                             break;
                         case KEY.SAVE:
-                            socket.saveGame();
+                            saveGame();
                             break;
                         case KEY.LOAD:
-                            socket.loadGame();
+                            loadGame();
                             break;
                         case KEY.FULL:
                             env.display().toggleFullscreen(gameScreen.height() !== window.innerHeight, gameScreen[0]);
@@ -321,4 +324,4 @@
     // initial app state
     setState(app.state.eden);
 
-})($, document, event, env, gameList, input, KEY, log, room, util);
+})($, document, event, env, gameList, input, KEY, log, room, socket, util);
